@@ -1,0 +1,32 @@
+# fish
+symlink ~/.config/fish fish
+
+# kitty
+symlink ~/.config/kitty/kitty.conf kitty.conf
+
+# vim/neovim
+symlink ~/.vimrc vimrc
+symlink ~/.config/nvim/init.vim nvim/init.vim
+
+# howl
+symlink ~/.howl/system/config.lua howl/system/config.lua
+symlink ~/.howl/init.moon howl/init.moon
+
+# git/hub
+symlink ~/.gitconfig gitconfig
+
+# Abricotine
+symlink ~/.config/Abricotine/app/config.json abricotine/config.json
+symlink ~/.config/Abricotine/app/themes abricotine/themes
+
+# htop
+symlink ~/.config/htop/htoprc htoprc
+
+# cava
+symlink ~/.config/cava/config cava
+
+# neofetch
+symlink ~/.config/neofetch neofetch
+
+# awesome
+symlink ~/.config/awesome awesome

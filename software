@@ -1,0 +1,36 @@
+Display manager
+	sddm
+Window manager
+	awesome
+
+Web browser
+	vivaldi
+
+Screenshot tool
+	scrot
+
+Audio mixer
+	pulsemixer (https://github.com/GeorgeFilipkin/pulsemixer)
+Visualizer
+	cava (https://github.com/karlstav/cava)
+
+Terminal
+	kitty
+		kitty-themes (https://github.com/dexpota/kitty-themes)
+Shell
+	fish
+Font
+	fira code
+Markdown editor
+	abricotine
+Code editors
+	vim
+	neovim
+	howl (https://howl.io)
+		howl_themes (https://github.com/rokf/howl_themes)
+		howl-fish (https://github.com/abaez/howl-fish)
+		howl-elixir (https://gitlab.com/MarcusE1W/howl-elixir.git)
+
+Misc
+	hub
+	kdeconnect

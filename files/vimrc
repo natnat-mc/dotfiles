@@ -1,0 +1,59 @@
+" base stuff
+set encoding=utf-8
+set fileencoding=utf-8
+set mouse=a
+set nocompatible
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set backspace=indent,eol,start
+set complete-=i
+set smarttab
+set mouse=a
+syntax on
+filetype plugin indent on
+
+" airline options
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'alduin'
+
+" load plugins
+call plug#begin('~/.vim/plug')
+Plug 'tpope/vim-sensible'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/nerdtree', {'on': ['NERDTree', 'NERDTreeToggle', 'NERDTreeFocus']}
+call plug#end()
+
+" NERDTree tweaks
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" remap <C-space> (which is actually <Nul>) to autocomplete
+imap <Nul> <C-x><C-u>
+imap <C-space> <C-x><C-u>
+
+" remap t and <C-t> to NERDTree
+nmap t :NERDTreeToggle<CR>
+nmap <C-t> :NERDTreeToggle<CR>
+imap <C-t> <ESC>:NERDTreeToggle<CR>
+
+" remap <C-left>, <C-right>, <C-up> and <C-down> to navigate buffers
+nmap <C-left> :bp!<CR>
+imap <C-left> <ESC>:bp!<CR>i
+nmap <C-right> :bn!<CR>
+imap <C-right> <ESC>:bn!<CR>i
+nmap <C-up> :edit 
+nmap <C-down> :bd<CR>
+
+" remaps to feel more like Eclipse
+nmap <C-d> dd
+imap <C-d> <ESC>ddi
+
+" eclim keymaps
+nmap <C-i> :JavaImport<CR>
+imap <C-i> <ESC>:JavaImport<CR>i
+nmap <C-g> :JavaGetSet<CR>
+imap <C-g> <ESC>:JavaGetSet<CR>i
+nmap <C-A-g> :JavaGet<CR>
+imap <C-A-g> <ESC>:JavaGet<CR>i

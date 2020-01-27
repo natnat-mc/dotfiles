@@ -1,0 +1,29 @@
+[alias]
+	a = add
+	b = branch
+	br = browse
+	c = commit -m
+	ch = checkout
+	cl = clone --recursive
+	co = config
+	cg = config --global
+	cr = create
+	d = diff
+	f = fetch
+	i = issue
+	ic = issue create -m
+	ica = issue create -a natnat-mc -m
+	ig = "!f() { for f in "$@"; do echo \"$f\" >> .gitignore; done; }; f"
+	in = init
+	is = issue show
+	l = log
+	m = merge
+	p = push
+	pu = pull
+	r = reset
+	s = status
+	k = "!f() { for f in "$@"; do touch \"$f\"/.gitkeep; done; }; f"
+	touch = "!f() { printf 'Killer Queen has already touched this git repo\n' >&2; }; f"
+[user]
+	name = Nathan DECHER
+	email = nathan.decher@gmail.com

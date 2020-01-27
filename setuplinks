@@ -1,0 +1,149 @@
+#!/usr/bin/env lua
+local function ask(q, def)
+	while true do
+		io.write(q)
+		if def then
+			io.write " [Y/n]: "
+		else
+			io.write " [y/N]: "
+		end
+		local ans=io.read '*l'
+		if ans=='' then
+			return def
+		elseif ans=='y' or ans=='Y' then
+			return true
+		elseif ans=='n' or ans=='N' then
+			return false
+		elseif ans==nil then
+			io.stderr:write "Encountered EOF, exiting\n"
+			os.exit(1)
+		end
+	end
+end
+
+local function realpath(path)
+	local fd=io.popen('realpath -m '..path, 'r')
+	local line=fd:read '*l'
+	fd:close()
+	return line
+end
+local function dirname(path)
+	return path:match '^(.+)/'
+end
+local function exec(str, prompt)
+	if prompt then
+		if not ask("Run command '"..str.."'?", true) then
+			return false
+		end
+	end
+	local rst=os.execute(str)
+	return rst==true or rst==0
+end
+local function test(...)
+	return exec('test '..table.concat({...}, ' '))
+end
+local function mkdir(path)
+	return exec('mkdir -p '..path, true)
+end
+local function mv(src, dst)
+	return exec('mv '..src..' '..dst, true)
+end
+local function ln(src, dst, options)
+	options=options or {}
+	local cmd={'ln', '-T'}
+	if options.symbolic then
+		table.insert(cmd, '-s')
+	end
+	if options.force then
+		table.insert(cmd, '-f')
+	end
+	table.insert(cmd, src)
+	table.insert(cmd, dst)
+	return exec(table.concat(cmd, ' '), true)
+end
+local function rm(path, options)
+	options=options or {}
+	local cmd={'rm'}
+	if options.recursive then
+		table.insert(cmd, '-r')
+	end
+	if options.force then
+		table.insert(cmd, '-f')
+	end
+	table.insert(cmd, path)
+	return exec(table.concat(cmd, ' '), true)
+end
+
+local path=dirname(realpath(arg[0]))
+
+local links={}
+do
+	local fd=io.open(path..'/links', 'r')
+	for line in fd:lines() do
+		if #line~=0 and not line:match '^#' then
+			local linktype, dest, source, options=line:match '^(%S+)%s+(%S+)%s+(%S+)%s*(.*)$'
+			table.insert(links, {linktype=linktype, source=realpath(path..'/files/'..source), dest=dest, options=options})
+		end
+	end
+	fd:close()
+end
+
+local installers={}
+
+function installers.symlink(src, dst)
+	local srcparent=dirname(src)
+	local dstparent=dirname(dst)
+	if realpath(dst)==src then
+		io.write "\tNothing to do\n"
+		return true
+	end
+	if not test('-d', srcparent) then
+		if not mkdir(srcparent) then
+			return false
+		end
+	end
+	if not test('-e', src) then
+		if ask("\tSource script is nonexistent, copy running version?", true) then
+			if not test('-d', dstparent) then
+				if not mkdir(dstparent) then
+					return false
+				end
+			end
+			if not test('-e', dst) then
+				io.write "\tSource and destination scripts both nonexistant\n"
+				return false
+			end
+			if not mv(dst, src) then
+				return false
+			end
+		else
+			return false
+		end
+	end
+	if test('-e', dst) then
+		if not ask("\tDestination script already exists, overwrite it?", true) then
+			return false
+		end
+	end
+	if test('-d', dst) then
+		if not rm(dst, {recursive=true}) then
+			return false
+		end
+	end
+	return ln(src, dst, {symbolic=true, force=true})
+end
+
+for i, link in ipairs(links) do
+	io.write("Installing link "..i.."/"..(#links)..": "..link.dest.." (type: "..link.linktype..")\n")
+
+	local installer=installers[link.linktype]
+	if not installer then
+		io.stderr:write "Installer not found for type "
+		io.stderr:write(link.linktype)
+		io.stderr:write "\n"
+		os.exit(1)
+	end
+	if not installer(link.source, link.dest, link.options) then
+		io.write "\tInstallation of link failed\n"
+	end
+end
