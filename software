@@ -2,6 +2,8 @@ Display manager
 	sddm
 Window manager
 	awesome
+Compositor
+	picom (https://github.com/yshui/picom)
 
 Web browser
 	vivaldi
